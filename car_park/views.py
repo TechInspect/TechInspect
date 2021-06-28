@@ -13,6 +13,14 @@ def index(request):
     return render(request, 'car_park/index.html', context)
 
 
+def by_user(request, user_uid):
+    parks = Park.objects.filter(user=user_uid)
+    users = UserUID.objects.all()
+    current_user = UserUID.objects.get(pk=user_uid)
+    context = {'parks': parks, 'users': users, 'current_user': current_user}
+    return render(request, 'car_park/by_user.html', context)
+
+
 class ParkCreateView(CreateView):
     template_name = 'car_park/create.html'
     form_class = TechInspectForm
