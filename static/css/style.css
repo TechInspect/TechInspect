@@ -1,29 +1,47 @@
 
-.page {
-    min-height: 100vh;
-    width: 100%;
+body {
+    background-image: url("/static/img/bg.png");
+    background-repeat: repeat;
+}
+
+nav {
+    margin-bottom: 20px;
+    z-index: 10;
+}
+
+.page-index {
+    position: fixed;
+    top: 0;
+    /*min-height: 100vh;
+    width: 100%;*/
+    bottom: 0;
+    left: 0;
+    right: 0;
     background-image: url("/static/img/pribornaya-doska-avtomobilya-scaled.jpg");
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
 }
 
-.container {
-    max-width: 1000px;
-    margin: 0 auto;
-    padding: 10px;
-    box-sizing: border-box;
+.page .container {
+    background-color: rgba(255, 255, 255, 0.7);
 }
 
 #welcome {
+    position: relative;
+    top: 40vh;
     max-width: 600px;
-    margin-top: 50%;
     margin-left: auto;
     margin-right: auto;
     background-color: rgba(255, 255, 255, 0.88);
     padding: 15px 20px;
-    transform: translateY(-80%);
     border-radius: 20px;
+    transform: translateY(-50%);
+}
+
+.garage-cars {
+    padding: 10px 20px;
+    background-color: #cfe2ff;
 }
 
 .text-darkcyan {

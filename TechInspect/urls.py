@@ -19,8 +19,8 @@ from django.conf.urls import include
 
 urlpatterns = [
     re_path(r'^', include('mainapp.urls', namespace='main')),
-    # re_path(r'^garage/')
+    re_path(r'^garage/', include('car_park.urls', namespace='car_park')),
 
     path('admin/', admin.site.urls),
-    path('car_park/', include('car_park.urls'))
+    # path('car_park/', include('car_park.urls'))
 ]
