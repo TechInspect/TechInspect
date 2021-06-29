@@ -5,4 +5,5 @@ from .models import Park
 class TechInspectForm(ModelForm):
     class Meta:
         model = Park
-        fields = ('userUID', 'brand', 'model', 'year', 'mileage', 'day_of_car_inspection')
+#         fields = ('userUID', 'brand', 'model', 'year', 'mileage', 'day_of_car_inspection')
+        fields = ('uid', 'brand', 'model', 'year', 'mileage')

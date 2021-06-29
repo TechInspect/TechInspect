@@ -1,0 +1,13 @@
+{% extends 'mainapp/base.html' %}
+
+{% block content %}
+  <div class="page-index">
+    <section class="container">
+      <div id="welcome">
+        <h1 class="text-darkcyan">Добро пожаловать на сайт TechInspect</h1>
+        <h2 class="">Теперь вы с легкостью будете контролировать расходы на авто, своевременно проводить ТО и планировать предстоящие расходы</h2>
+        <a href="{% url 'car_park:index' %}" class="btn btn-success btn-lg mt-3">Перейти в гараж</a>
+      </div>
+    </section>
+  </div>
+{% endblock %}

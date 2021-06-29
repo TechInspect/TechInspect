@@ -1,0 +1,44 @@
+{% extends 'mainapp/base.html' %}
+
+{% block content %}
+    <div class="page">
+        <section class="container pt-2 pb-5">
+            <h1>{{ title }}</h1>
+
+            <div class="bg-light p-2">
+                <h3>Отметки:</h3>
+                {% if car_info %}
+                    <table class="table">
+                        {% for info_item in car_info %}
+                            <tr>
+                                <td>{{ info_item.date }}</td>
+                                <td>{{ info_item.mileage }}</td>
+                                <td>{{ info_item.comment }}</td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                {% else %}
+                    <div>Автопарк пуст</div>
+                {% endif %}
+            </div>
+
+            <div class="bg-light p-2 mt-5">
+                <h3>Предстоит выполнить:</h3>
+                {% if car_upcoming %}
+                    <table class="table">
+                        {% for info in car_upcoming %}
+                            <tr class="bg-warning">
+                                <td>{{ info.date }}</td>
+                                <td>{{ info.mileage }}</td>
+                                <td>{{ info.comment }}</td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                {% else %}
+                    <div>Автопарк пуст</div>
+                {% endif %}
+            </div>
+
+        </section>
+    </div>
+{% endblock %}
