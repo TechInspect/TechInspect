@@ -1,19 +1,6 @@
 {% extends 'mainapp/base.html' %}
 
-{% block menu %}
-{% if user.is_authenticated %}
-    <p> Вы авторизованы. </p>
-    <a class="nav-link" href="{% url 'auth:logout' %}">Выйти <i class="fas fa-sign-in-alt"></i></a>
-{% else %}
-    <li class="nav-item">
-        <a class="nav-link" href="{% url 'auth:login' %}">Войти <i class="fas fa-sign-in-alt"></i></a>
-        <a class="nav-link" href="{% url 'auth:register' %}">Зарегистрироваться <i class="fas fa-sign-in-alt"></i></a>
-    </li>
-{% endif %}
-
-{% endblock %}
-
-{% block content %}
+{% block page %}
   <div class="page-index">
     <section class="container">
       <div id="welcome">
@@ -23,4 +10,4 @@
       </div>
     </section>
   </div>
-{% endblock %}
+{% endblock page %}

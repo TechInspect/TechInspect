@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.views.generic.edit import CreateView, UpdateView
 from django.contrib.messages.views import SuccessMessageMixin
+from django.contrib.auth.decorators import login_required, user_passes_test
 
 from authapp.forms import UserLoginForm, UserRegisterForm, UserProfileForm
 from authapp.models import User
@@ -12,11 +13,17 @@ from authapp.models import User
 # Create your views here.
 # login with CBV
 class UserLoginView(LoginView):
-    context = 'Вход'
+    # extra_context = {
+    #     'title': 'Вход',
+    # }
     template_name = 'authapp/login.html'
     model = User
     form_class = UserLoginForm
     fields = ['username', 'password']
+
+    @method_decorator(user_passes_test(lambda u: u.is_anonymous, login_url='car_park:index', redirect_field_name=''))
+    def dispatch(self, request, *args, **kwargs):
+        return super(UserLoginView, self).dispatch(request, *args, **kwargs)
 
 
 class RegisterCreateView(SuccessMessageMixin, CreateView):

@@ -1,15 +1,21 @@
-{% extends "mainapp/base.html" %}
+{% extends "mainapp/page.html" %}
 {% load bootstrap4 %}
+
 {% block content %}
-<h2>Вход</h2>
-{% if user.is_authenticated %}
-<р>Вы уже выполнили вход.</р>
-{% else %}
-<form method="post">
-{% csrf_token %}
-{% bootstrap_form form %}
-<input type="hidden" name="next" value="{{ next }}">
-{% buttons submit='Войти' %}{% endbuttons %}
-</form>
-{% endif %}
+    <div class="col-md-6 m-auto">
+        <div class="card">
+            <div class="card-header py-3 d-flex justify-content-between">
+                <h3 class="m-0 font-weight-bold text-primary">Авторизация</h3>
+            </div>
+            <div class="p-3">
+                <form method="post">
+                    {% csrf_token %}
+                    {% bootstrap_form form %}
+                    <input type="hidden" name="next" value="{{ next }}">
+                    {% buttons submit='Войти' %}{% endbuttons %}
+                </form>
+                <a href="{% url 'auth:register' %}">Регистрация</a>
+            </div>
+        </div>
+    </div>
 {% endblock %}

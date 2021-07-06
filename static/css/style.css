@@ -23,9 +23,6 @@ nav {
     background-size: cover;
 }
 
-.page .container {
-    background-color: rgba(255, 255, 255, 0.7);
-}
 
 #welcome {
     position: relative;
@@ -46,4 +43,9 @@ nav {
 
 .text-darkcyan {
     color: darkcyan;
+}
+
+
+.border-left-primary {
+    border-left: .25rem solid #4e73df!important;
 }

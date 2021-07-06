@@ -1,44 +1,82 @@
-{% extends 'mainapp/base.html' %}
+{% extends 'mainapp/page.html' %}
 
 {% block content %}
-    <div class="page">
-        <section class="container pt-2 pb-5">
-            <h1>{{ title }}</h1>
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'car_park:index' %}">Гараж</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ title }}</li>
+        </ol>
+    </nav>
 
-            <div class="bg-light p-2">
-                <h3>Отметки:</h3>
-                {% if car_info %}
+    <div class="row">
+        <div class="col-lg-12 mb-4">
+
+            <div class="card shadow mb-4">
+                <div class="card-header py-3 d-flex justify-content-between">
+                    <h6 class="m-0 font-weight-bold text-primary">История обслуживания</h6>
+                    <button type="button" class="btn btn-outline-success">Добавить отметку</button>
+                </div>
+                <div>
                     <table class="table">
-                        {% for info_item in car_info %}
-                            <tr>
-                                <td>{{ info_item.date }}</td>
-                                <td>{{ info_item.mileage }}</td>
-                                <td>{{ info_item.comment }}</td>
-                            </tr>
-                        {% endfor %}
+                        <tr>
+                            <th>Дата отметки</th>
+                            <th>Пребег</th>
+                            <th>Тип отметки</th>
+                            <th>Комментарий</th>
+                        </tr>
+                        {% if car_info %}
+                            {% for info_item in car_info %}
+                                <tr>
+                                    <td>{{ info_item.created_at }}</td>
+                                    <td>{{ info_item.mileage }}</td>
+                                    <td>{{ info_item.type }}</td>
+                                    <td>{{ info_item.comment }}</td>
+                                </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr><td colspan="4">Нет истории обслуживания</td></tr>
+                        {% endif %}
                     </table>
-                {% else %}
-                    <div>Автопарк пуст</div>
-                {% endif %}
+                </div>
             </div>
 
-            <div class="bg-light p-2 mt-5">
-                <h3>Предстоит выполнить:</h3>
-                {% if car_upcoming %}
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-12 mb-4">
+
+            <div class="card shadow mb-4">
+                <div class="card-header py-3 d-flex justify-content-between">
+                    <h6 class="m-0 font-weight-bold text-primary">Предстоящее обслуживание</h6>
+<!--                            <button type="button" class="btn btn-outline-success">Добавить отметку</button>-->
+                </div>
+                <div>
                     <table class="table">
-                        {% for info in car_upcoming %}
-                            <tr class="bg-warning">
-                                <td>{{ info.date }}</td>
-                                <td>{{ info.mileage }}</td>
-                                <td>{{ info.comment }}</td>
-                            </tr>
-                        {% endfor %}
+                        <tr>
+                            <th></th>
+                            <th>Описание работ</th>
+                            <th>Тип обслуживания</th>
+                            <th>Выполнить до даты</th>
+                            <th>Выполнить до пробега</th>
+                        </tr>
+                        {% if car_upcoming %}
+                            {% for item in car_upcoming %}
+                                    <tr class="{% if item.completed_at == 0 %}table-warning{% else %}table-success text-success{% endif %}">
+                                        <td>{% if item.completed_at != 0 %}<i class="fas fa-check"></i>{% endif %}</td>
+                                        <td>{{ item.name }}</td>
+                                        <td>{{ item.type }}</td>
+                                        <td>{{ item.time_period }}</td>
+                                        <td>{{ item.mileage_period }}</td>
+                                    </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr><td colspan="4">Нет предстоящих работ</td></tr>
+                        {% endif %}
                     </table>
-                {% else %}
-                    <div>Автопарк пуст</div>
-                {% endif %}
+                </div>
             </div>
 
-        </section>
+        </div>
     </div>
 {% endblock %}

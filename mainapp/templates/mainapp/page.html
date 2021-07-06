@@ -1,0 +1,12 @@
+{% extends 'mainapp/base.html' %}
+
+{% block page %}
+    <div class="page">
+        <section class="container pt-2 pb-5">
+            <h1 class="text-light display-4 mb-3">{{ title }}</h1>
+
+            {% block content %} {% endblock content %}
+
+        </section>
+    </div>
+{% endblock page %}
