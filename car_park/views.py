@@ -2,22 +2,26 @@ from django.shortcuts import render
 import datetime
 from django.views.generic.edit import CreateView
 from django.urls import reverse_lazy
+from django.contrib.auth.decorators import login_required, user_passes_test
 
 from .forms import TechInspectForm
 from .models import Park, UserUID
 
 
+@user_passes_test(lambda u: not u.is_anonymous, login_url='auth:login', redirect_field_name='')
 def index(request):
     # park = Park.objects.all()
     # user_uid = UserUID.objects.all()
     context = {
         'title': 'Гараж',
         'cars': cars_example(),
+        # 'cars': [],
         # 'user_uid': user_uid
     }
     return render(request, 'car_park/index.html', context)
 
 
+@user_passes_test(lambda u: not u.is_anonymous, login_url='auth:login', redirect_field_name='')
 def car_info(request, car_id):
     car_id = int(car_id)
     car = cars_example()[car_id - 1]
@@ -57,11 +61,15 @@ def cars_example():
     return [
         {
             'id': 1,
+            'user_id': 1,
             'brand': 'Skoda',
             'model': 'Yeti',
             'year': 2012,
-            'mileage': 155000,
-            'uid': 1,
+            'description': 'Основная семейная машина (она же единственная)',
+            'created_at': 1623531600,
+            'deleted_at': 0,
+            'active': True,
+            # 'mileage': 155000,
         }
     ]
 
@@ -70,19 +78,19 @@ def car_info_example():
     return [
         {
             'id': 1,
-            'cid': 1,
-            'mileage': 155030,
+            'car_id': 1,
             'type': 'Заправка',
-            'date': '05.06.2021',
+            'mileage': 155030,
+            'created_at': '05.06.2021',
             'comment': 'Заправил 30 литров'
         },
         {
             'id': 2,
-            'cid': 1,
-            'mileage': 155040,
+            'car_id': 1,
             'type': 'ТО',
-            'date': '10.06.2021',
-            'comment': 'Замена масла'
+            'mileage': 155040,
+            'created_at': '10.06.2021',
+            'comment': 'Замена моторного масла и фильтра'
         },
     ]
 
@@ -91,10 +99,20 @@ def car_upcoming_example():
     return [
         {
             'id': 1,
-            'cid': 1,
-            'mileage': 155250,
+            'car_id': 1,
             'type': 'ТО',
-            'date': '15.07.2021',
-            'comment': 'Замена свечей'
+            'name': 'Замена моторного масла и фильтра',
+            'mileage_period': 155040,
+            'time_period': '01.07.2021',
+            'completed_at': '10.06.2021',
+        },
+        {
+            'id': 2,
+            'car_id': 1,
+            'type': 'ТО',
+            'name': 'Замена свечей',
+            'mileage_period': 155250,
+            'time_period': '15.07.2021',
+            'completed_at': 0,
         },
     ]

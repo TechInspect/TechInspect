@@ -1,24 +1,46 @@
-{% extends 'mainapp/base.html' %}
+{% extends 'mainapp/page.html' %}
 
 {% block content %}
-    <div class="page">
-        <section class="container pt-2 pb-5">
-            <h1>{{ title }}</h1>
+    <div class="row">
+        <div class="col-lg-12 mb-4">
 
-            <div class="garage-cars">
-                <h3>Автопарк пользователя</h3>
-                {% if cars %}
-                    <div class="list-group">
-                        {% for car in cars %}
-                            <a href="{% url 'car_park:car_info' car.id %}" class="list-group-item list-group-item-action">
-                                {{ car.brand }} {{ car.model }} ({{ car.year }})
-                            </a>
-                        {% endfor %}
-                    </div>
-                {% else %}
-                    <div>Автопарк пуст</div>
-                {% endif %}
+            <!-- Car_park -->
+            <div class="card shadow mb-4">
+                <div class="card-header py-3 d-flex justify-content-between">
+                    <h6 class="m-0 font-weight-bold text-primary">Автопарк пользователя</h6>
+                    <button type="button" class="btn btn-outline-success">Добавить</button>
+                </div>
+
+                <div class="row p-3">
+
+                    {% if cars %}
+                        <div class="col-xl-4 col-md-6">
+                            {% for car in cars %}
+                                <div class="card border-left-primary shadow h-100 py-2">
+                                    <a href="{% url 'car_park:car_info' car.id %}" class="card-body text-dark text-decoration-none">
+                                        <div class="row no-gutters align-items-center">
+                                            <div class="col-auto mr-3">
+                                                <i class="fas fa-car fa-2x text-gray-300"></i>
+                                            </div>
+                                            <div class="col">
+                                                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                                    {{ car.brand }} {{ car.model }} ({{ car.year }})</div>
+                                                <div class="h5 mb-0 font-weight-bold text-muted">155 200</div>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">Автопарк пуст</div>
+                        </div>
+                    {% endif %}
+
+                </div>
             </div>
-        </section>
+
+        </div>
     </div>
 {% endblock %}
