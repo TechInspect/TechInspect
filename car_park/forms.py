@@ -2,8 +2,10 @@ from django.forms import ModelForm
 from .models import Park
 
 
-class TechInspectForm(ModelForm):
-    class Meta:
-        model = Park
-#         fields = ('userUID', 'brand', 'model', 'year', 'mileage', 'day_of_car_inspection')
-        fields = ('uid', 'brand', 'model', 'year', 'mileage')
+# class CarAddForm(ModelForm):
+#     class Meta:
+#         model = Park
+#         fields = ('brand', 'model', 'year', 'description')
+#
+#     def __init__(self, *args, **kwargs):
+#         super(CarAddForm, self).__init__(*args, **kwargs)
