@@ -8,14 +8,14 @@
             <div class="card shadow mb-4">
                 <div class="card-header py-3 d-flex justify-content-between">
                     <h6 class="m-0 font-weight-bold text-primary">Автопарк пользователя</h6>
-                    <button type="button" class="btn btn-outline-success">Добавить</button>
+                    <a href="{% url 'car_park:add' %}" class="btn btn-outline-success">Добавить</a>
                 </div>
 
                 <div class="row p-3">
 
                     {% if cars %}
-                        <div class="col-xl-4 col-md-6">
-                            {% for car in cars %}
+                        {% for car in cars %}
+                            <div class="col-xl-4 col-md-6">
                                 <div class="card border-left-primary shadow h-100 py-2">
                                     <a href="{% url 'car_park:car_info' car.id %}" class="card-body text-dark text-decoration-none">
                                         <div class="row no-gutters align-items-center">
@@ -24,17 +24,17 @@
                                             </div>
                                             <div class="col">
                                                 <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                                    {{ car.brand }} {{ car.model }} ({{ car.year }})</div>
+                                                    {{ car.brand }} {{ car.model }}{% if car.year %} ({{ car.year }}) {% endif %}</div>
                                                 <div class="h5 mb-0 font-weight-bold text-muted">155 200</div>
                                             </div>
                                         </div>
                                     </a>
                                 </div>
-                            {% endfor %}
-                        </div>
+                            </div>
+                        {% endfor %}
                     {% else %}
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">Автопарк пуст</div>
+                            <div class="text-xs font-weight-bold text-danger mb-1">В автопарке пока нет автомобилей. <a href="{% url 'car_park:add' %}">Добавить</a></div>
                         </div>
                     {% endif %}
 

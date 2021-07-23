@@ -1,7 +1,7 @@
 from django.urls import path, re_path
 
 # from .views import index, ParkCreateView, by_user
-from car_park.views import index, car_info
+from car_park.views import index, car_info, CarAdd
 
 app_name = 'car_park'
 
@@ -11,5 +11,6 @@ urlpatterns = [
     # path('', index, name='index'),
 
     re_path(r'^$', index, name='index'),
-    re_path(r'^(?P<car_id>\d+)/$', car_info, name='car_info')
+    re_path(r'^add/$', CarAdd.as_view(), name='add'),
+    re_path(r'^(?P<car_id>\d+)/$', car_info, name='car_info'),
 ]

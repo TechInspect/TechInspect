@@ -4,8 +4,11 @@ from django.views.generic.edit import CreateView
 from django.urls import reverse_lazy
 from django.contrib.auth.decorators import login_required, user_passes_test
 
-from .forms import TechInspectForm
-from .models import Park, UserUID
+from car_park.models import Park
+# from car_park.forms import CarAddForm
+
+# from .forms import TechInspectForm
+# from .models import Park, UserUID
 
 
 @user_passes_test(lambda u: not u.is_anonymous, login_url='auth:login', redirect_field_name='')
@@ -14,18 +17,38 @@ def index(request):
     # user_uid = UserUID.objects.all()
     context = {
         'title': 'Гараж',
-        'cars': cars_example(),
+        'cars': Park.objects.filter(user=request.user)
+        # 'cars': cars_example(),
         # 'cars': [],
         # 'user_uid': user_uid
     }
     return render(request, 'car_park/index.html', context)
 
 
+class CarAdd(CreateView):
+    model = Park
+    fields = ['brand', 'model', 'year']
+    template_name = 'car_park/car_add.html'
+    success_url = reverse_lazy('car_park:index')
+
+    def get_context_data(self, **kwargs):
+        context = super(CarAdd, self).get_context_data(**kwargs)
+        context['title'] = 'Добавить авто в свой автопарк'
+        return context
+
+    def form_valid(self, form):
+        car = form.save(commit=False)
+        car.user = self.request.user
+        return super(CarAdd, self).form_valid(form)
+
+
 @user_passes_test(lambda u: not u.is_anonymous, login_url='auth:login', redirect_field_name='')
 def car_info(request, car_id):
     car_id = int(car_id)
     car = cars_example()[car_id - 1]
+    # car = None
     car_info = car_info_example()
+    # car_info = None
     print(car_info)
     context = {
         'title': f'{car["brand"]} {car["model"]} ({car["year"]})',

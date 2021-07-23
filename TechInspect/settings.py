@@ -55,6 +55,7 @@ INSTALLED_APPS = [
     'authapp',
     'bootstrap4',
 ]
+AUTH_USER_MODEL = 'authapp.User'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
