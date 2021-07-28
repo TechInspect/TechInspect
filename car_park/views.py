@@ -12,7 +12,7 @@ from car_park.models import Park
 
 
 @user_passes_test(lambda u: not u.is_anonymous, login_url='auth:login', redirect_field_name='')
-def index(request):
+def cars(request):
     # park = Park.objects.all()
     # user_uid = UserUID.objects.all()
     context = {
@@ -22,14 +22,14 @@ def index(request):
         # 'cars': [],
         # 'user_uid': user_uid
     }
-    return render(request, 'car_park/index.html', context)
+    return render(request, 'car_park/cars.html', context)
 
 
 class CarAdd(CreateView):
     model = Park
     fields = ['brand', 'model', 'year']
     template_name = 'car_park/car_add.html'
-    success_url = reverse_lazy('car_park:index')
+    success_url = reverse_lazy('car_park:cars')
 
     def get_context_data(self, **kwargs):
         context = super(CarAdd, self).get_context_data(**kwargs)
@@ -57,6 +57,23 @@ def car_info(request, car_id):
         'car_upcoming': car_upcoming_example(),
     }
     return render(request, 'car_park/car_info.html', context)
+
+
+@user_passes_test(lambda u: not u.is_anonymous, login_url='auth:login', redirect_field_name='')
+def history(request, car_id):
+    car_id = int(car_id)
+    car = cars_example()[car_id - 1]
+    # car = None
+    car_info = car_info_example()
+    # car_info = None
+    print(car_info)
+    context = {
+        'title': f'{car["brand"]} {car["model"]} ({car["year"]})',
+        'car': car,
+        'car_info': car_info,
+        'car_upcoming': car_upcoming_example(),
+    }
+    return render(request, 'car_park/history.html', context)
 
 
 #
