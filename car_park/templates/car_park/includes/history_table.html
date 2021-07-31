@@ -1,0 +1,34 @@
+<div class="row">
+    <div class="col-lg-12 mb-4">
+
+        <div class="card shadow mb-4">
+            <div class="card-header py-3 d-flex justify-content-between">
+                <h6 class="m-0 font-weight-bold text-primary">История обслуживания</h6>
+                <button type="button" class="btn btn-outline-success">Добавить отметку</button>
+            </div>
+            <div>
+                <table class="table">
+                    <tr>
+                        <th>Дата отметки</th>
+                        <th>Пребег</th>
+                        <th>Тип отметки</th>
+                        <th>Комментарий</th>
+                    </tr>
+                    {% if car_info %}
+                        {% for info_item in car_info %}
+                            <tr>
+                                <td>{{ info_item.created_at }}</td>
+                                <td>{{ info_item.mileage }}</td>
+                                <td>{{ info_item.type }}</td>
+                                <td>{{ info_item.comment }}</td>
+                            </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr><td colspan="4">Нет истории обслуживания</td></tr>
+                    {% endif %}
+                </table>
+            </div>
+        </div>
+
+    </div>
+</div>
