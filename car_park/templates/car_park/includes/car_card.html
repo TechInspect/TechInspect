@@ -1,0 +1,30 @@
+<div class="card border-left-primary shadow h-100 py-2 my-3">
+    <div class="row no-gutters align-items-center">
+        <div class="mx-3">
+            <i class="fas fa-car fa-2x text-gray-300"></i>
+        </div>
+        <a href="{% url 'car_park:car_info' car.id %}" class="col-3 mr-3 h5">
+            <div class="font-weight-bold">
+                {{ car.brand }}
+            </div>
+            <div class="font-weight-bold text-s">
+                {{ car.model }}{% if car.year %} ({{ car.year }}) {% endif %}
+            </div>
+        </a>
+        <div class="col-2 mr-3">
+            <div class="mb-0 text-muted">
+                <span class="text-xs font-italic">Текущий пробег:</span><br>
+                <span class="h5 font-weight-bold">155 200</span>
+            </div>
+        </div>
+
+        <div class="col-4">
+            <a href="{% url 'car_park:history' car.id %}" class="btn btn-primary mr-3">
+                История обслуживания
+            </a>
+            <a href="{% url 'car_park:car_info' car.id %}" class="btn btn-secondary">
+                Инфо
+            </a>
+        </div>
+    </div>
+</div>

@@ -45,6 +45,12 @@ nav {
     color: darkcyan;
 }
 
+.text-s {
+    font-size: 0.9em;
+}
+.text-xs {
+    font-size: 0.85em;
+}
 
 .border-left-primary {
     border-left: .25rem solid #4e73df!important;

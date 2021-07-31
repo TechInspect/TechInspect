@@ -1,7 +1,8 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 import datetime
-from django.views.generic.edit import CreateView
+from django.views.generic import CreateView, DetailView
 from django.urls import reverse_lazy
+from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required, user_passes_test
 
 from car_park.models import Park
@@ -12,24 +13,19 @@ from car_park.models import Park
 
 
 @user_passes_test(lambda u: not u.is_anonymous, login_url='auth:login', redirect_field_name='')
-def index(request):
-    # park = Park.objects.all()
-    # user_uid = UserUID.objects.all()
+def cars(request):
     context = {
         'title': 'Гараж',
         'cars': Park.objects.filter(user=request.user)
-        # 'cars': cars_example(),
-        # 'cars': [],
-        # 'user_uid': user_uid
     }
-    return render(request, 'car_park/index.html', context)
+    return render(request, 'car_park/cars.html', context)
 
 
 class CarAdd(CreateView):
     model = Park
     fields = ['brand', 'model', 'year']
     template_name = 'car_park/car_add.html'
-    success_url = reverse_lazy('car_park:index')
+    success_url = reverse_lazy('car_park:cars')
 
     def get_context_data(self, **kwargs):
         context = super(CarAdd, self).get_context_data(**kwargs)
@@ -45,6 +41,32 @@ class CarAdd(CreateView):
 @user_passes_test(lambda u: not u.is_anonymous, login_url='auth:login', redirect_field_name='')
 def car_info(request, car_id):
     car_id = int(car_id)
+    car = get_object_or_404(Park, id=car_id, user_id=request.user.id)
+    context = {
+        'title': f'{car.brand} {car.model}',
+        'car': car,
+    }
+    return render(request, 'car_park/car_info.html', context)
+
+
+class CarDetail(DetailView):
+    model = Park
+    template_name = 'car_park/car_info.html'
+    context_object_name = 'car'
+
+    def get_context_data(self, **kwargs):
+        context = super(CarDetail, self).get_context_data(**kwargs)
+        context['title'] = f'{context["car"].brand} {context["car"].model}'
+        return context
+
+    @method_decorator(user_passes_test(lambda u: not u.is_anonymous, login_url='auth:login', redirect_field_name=''))
+    def dispatch(self, request, *args, **kwargs):
+        return super(CarDetail, self).dispatch(request, *args, **kwargs)
+
+
+@user_passes_test(lambda u: not u.is_anonymous, login_url='auth:login', redirect_field_name='')
+def history(request, car_id):
+    car_id = int(car_id)
     car = cars_example()[car_id - 1]
     # car = None
     car_info = car_info_example()
@@ -56,7 +78,7 @@ def car_info(request, car_id):
         'car_info': car_info,
         'car_upcoming': car_upcoming_example(),
     }
-    return render(request, 'car_park/car_info.html', context)
+    return render(request, 'car_park/history.html', context)
 
 
 #
