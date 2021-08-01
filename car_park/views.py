@@ -5,7 +5,7 @@ from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required, user_passes_test
 
-from car_park.models import Park
+from car_park.models import Park, CarHistory
 # from car_park.forms import CarAddForm
 
 # from .forms import TechInspectForm
@@ -71,7 +71,7 @@ def history(request, car_id):
     # car = None
     car_info = car_info_example()
     # car_info = None
-    print(car_info)
+    # print(car_info)
     context = {
         'title': f'{car["brand"]} {car["model"]} ({car["year"]})',
         'car': car,
@@ -80,6 +80,24 @@ def history(request, car_id):
     }
     return render(request, 'car_park/history.html', context)
 
+
+class HistoryAdd(CreateView):
+    model = CarHistory
+    fields = ['mileage', 'type', 'comment']
+    template_name = 'car_park/history_add.html'
+    success_url = reverse_lazy('car_park:cars')
+
+    def get_context_data(self, **kwargs):
+        context = super(HistoryAdd, self).get_context_data(**kwargs)
+        context['title'] = 'Добавить историю авто'
+        return context
+
+    def form_valid(self, form):
+
+        car_park_carhistory = form.save(commit=False)
+        # car_park_carhistory.car_id = self.request.car_id
+        car_park_carhistory.car_id = 1
+        return super(HistoryAdd, self).form_valid(form)
 
 #
 #
