@@ -112,11 +112,6 @@ def history(request, car_id):
     car_id = int(car_id)
     car = get_object_or_404(Park, id=car_id)
     history = CarHistory.objects.filter(car_id=car_id)
-    # car = cars_example()[car_id - 1]
-    # car = None
-    # car_info = car_info_example()
-    # car_info = None
-    # print(car_info)
     context = {
         'title': f'{car.brand} {car.model}',
         'car': car,
@@ -144,13 +139,13 @@ class HistoryAdd(CreateView):
             form.fields['type'].initial = "INI"
             form.fields['type'].disabled = True
         else:
-            # form.fields['type'].choices.pop(0)
             form.fields['type'].widget.choices.pop(0)
         return form
 
     def get_context_data(self, **kwargs):
         context = super(HistoryAdd, self).get_context_data(**kwargs)
         context['title'] = 'Добавить историю авто'
+        context['car'] = self.car
         return context
 
     def form_valid(self, form):

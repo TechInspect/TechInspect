@@ -46,12 +46,14 @@ class CarHistory(models.Model):
     REGLAMENT = "RGL"
     REPAIR = "RPR"
 
-    HISTORY_TYPES_CHOICES = (
-        (INITIATION, "Первичная запись"),
-        (FUEL, "Заправка авто"),
-        (REGLAMENT, "ТО"),
-        (REPAIR, "Ремонт"),
-    )
+    HISTORY_TYPES_CHOICES_DICT = {
+        INITIATION: "Первичная запись",
+        FUEL: "Заправка авто",
+        REGLAMENT: "ТО",
+        REPAIR: "Ремонт",
+    }
+
+    HISTORY_TYPES_CHOICES = tuple((k, v) for k, v in HISTORY_TYPES_CHOICES_DICT.items())
 
     car = models.ForeignKey(Park, on_delete=models.CASCADE, verbose_name='ID авто')
     type = models.CharField(max_length=3, choices=HISTORY_TYPES_CHOICES, default=FUEL, verbose_name='Тип записи')
@@ -64,6 +66,13 @@ class CarHistory(models.Model):
         verbose_name_plural = 'История обслуживания'
         verbose_name = 'Запись истории'
         ordering = ['mileage', 'created_at']
+
+    @property
+    def type_decode(self):
+        if self.type in self.HISTORY_TYPES_CHOICES_DICT:
+            return self.HISTORY_TYPES_CHOICES_DICT[self.type]
+        else:
+            return None
 
     @staticmethod
     def record_last_by_mileage(car_id):
