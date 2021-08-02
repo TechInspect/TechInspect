@@ -66,14 +66,17 @@ class CarDetail(DetailView):
 
 @user_passes_test(lambda u: not u.is_anonymous, login_url='auth:login', redirect_field_name='')
 def history(request, car_id):
-    car_id = int(car_id)
-    car = cars_example()[car_id - 1]
+    # car_id = int(car_id)
+    car = Park.objects.get(id=car_id)
+
+    # car = cars_example()[car_id - 1]
     # car = None
-    car_info = car_info_example()
+    car_info = CarHistory.objects.filter(car_id=car_id)
+    # car_info = car_info_example()
     # car_info = None
     # print(car_info)
     context = {
-        'title': f'{car["brand"]} {car["model"]} ({car["year"]})',
+        'title': f"{car.brand} {car.model} ({car.year})",
         'car': car,
         'car_info': car_info,
         'car_upcoming': car_upcoming_example(),
@@ -87,6 +90,11 @@ class HistoryAdd(CreateView):
     template_name = 'car_park/history_add.html'
     success_url = reverse_lazy('car_park:cars')
 
+    # def get_queryset(self):
+    #     user_id = Park.objects.filter(car_id=self.request.user_id)
+    #     print(user_id)
+    #     return user_id
+
     def get_context_data(self, **kwargs):
         context = super(HistoryAdd, self).get_context_data(**kwargs)
         context['title'] = 'Добавить историю авто'
@@ -96,7 +104,12 @@ class HistoryAdd(CreateView):
 
         car_park_carhistory = form.save(commit=False)
         # car_park_carhistory.car_id = self.request.car_id
-        car_park_carhistory.car_id = 1
+        # car_park_carhistory.car_id = self.get_queryset()
+
+        helps = self.get_form_kwargs()
+        # print(helps['data']['user'][0])
+        car_park_carhistory.car_id = helps['data']['user'][0]
+        # car_park_carhistory.car_id = self.model.id
         return super(HistoryAdd, self).form_valid(form)
 
 #
