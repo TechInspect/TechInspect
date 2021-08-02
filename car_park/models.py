@@ -1,5 +1,8 @@
 from django.db import models
 from django.conf import settings
+from django.shortcuts import get_object_or_404
+
+from datetime import datetime
 
 
 class Park(models.Model):
@@ -16,7 +19,24 @@ class Park(models.Model):
     class Meta:
         verbose_name_plural = 'Парк автомобилей'
         verbose_name = 'Автомобиль'
-        ordering = ['user', '-id', '-active']
+        ordering = ['user', '-active', '-id']
+
+    def delete(self, using=None, keep_parents=False):
+        self.active = False
+        self.deleted_at = datetime.now()
+        self.save()
+
+    @property
+    def mileage_last(self):
+        event = CarHistory.record_last_by_mileage(self.id)
+        if event:
+            return event.mileage
+        else:
+            return None
+
+    @staticmethod
+    def car_by_id(car_id):
+        return get_object_or_404(Park, id=car_id)
 
 
 class CarHistory(models.Model):
@@ -27,14 +47,14 @@ class CarHistory(models.Model):
     REPAIR = "RPR"
 
     HISTORY_TYPES_CHOICES = (
-        (INITIATION, "первичная запись"),
-        (FUEL, "заправка авто"),
-        (REGLAMENT, "то"),
-        (REPAIR, "ремонт"),
+        (INITIATION, "Первичная запись"),
+        (FUEL, "Заправка авто"),
+        (REGLAMENT, "ТО"),
+        (REPAIR, "Ремонт"),
     )
 
     car = models.ForeignKey(Park, on_delete=models.CASCADE, verbose_name='ID авто')
-    type = models.CharField(max_length=3, choices=HISTORY_TYPES_CHOICES, default=FUEL, verbose_name='Статус заказа')
+    type = models.CharField(max_length=3, choices=HISTORY_TYPES_CHOICES, default=FUEL, verbose_name='Тип записи')
     mileage = models.PositiveIntegerField(verbose_name='Пробег авто на момент записи')
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания записи')
     updated_at = models.DateTimeField(auto_now=True, verbose_name='Дата обновления записи')
@@ -44,3 +64,7 @@ class CarHistory(models.Model):
         verbose_name_plural = 'История обслуживания'
         verbose_name = 'Запись истории'
         ordering = ['mileage', 'created_at']
+
+    @staticmethod
+    def record_last_by_mileage(car_id):
+        return CarHistory.objects.filter(car_id=car_id).order_by('-mileage').first()

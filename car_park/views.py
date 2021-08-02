@@ -1,7 +1,7 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 import datetime
-from django.views.generic import CreateView, DetailView
-from django.urls import reverse_lazy
+from django.views.generic import CreateView, DetailView, UpdateView, DeleteView
+from django.urls import reverse, reverse_lazy
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required, user_passes_test
 
@@ -38,17 +38,6 @@ class CarAdd(CreateView):
         return super(CarAdd, self).form_valid(form)
 
 
-@user_passes_test(lambda u: not u.is_anonymous, login_url='auth:login', redirect_field_name='')
-def car_info(request, car_id):
-    car_id = int(car_id)
-    car = get_object_or_404(Park, id=car_id, user_id=request.user.id)
-    context = {
-        'title': f'{car.brand} {car.model}',
-        'car': car,
-    }
-    return render(request, 'car_park/car_info.html', context)
-
-
 class CarDetail(DetailView):
     model = Park
     template_name = 'car_park/car_info.html'
@@ -64,18 +53,74 @@ class CarDetail(DetailView):
         return super(CarDetail, self).dispatch(request, *args, **kwargs)
 
 
+class CarEdit(UpdateView):
+    model = Park
+    template_name = 'car_park/car_edit.html'
+    context_object_name = 'car'
+    fields = ['brand', 'model', 'year', 'description']
+
+    def get_success_url(self):
+        self.success_url = reverse_lazy('car_park:car_info', args=[self.kwargs['pk']])
+        return str(self.success_url)
+
+    def get_context_data(self, **kwargs):
+        context = super(CarEdit, self).get_context_data(**kwargs)
+        context['title'] = f'{context["car"].brand} {context["car"].model}'
+        return context
+
+    @method_decorator(user_passes_test(lambda u: not u.is_anonymous, login_url='auth:login', redirect_field_name=''))
+    def dispatch(self, request, *args, **kwargs):
+        return super(CarEdit, self).dispatch(request, *args, **kwargs)
+
+
+class CarDelete(DeleteView):
+    model = Park
+    template_name = 'car_park/car_delete.html'
+    context_object_name = 'car'
+    success_url = reverse_lazy('car_park:cars')
+
+    def get_context_data(self, **kwargs):
+        context = super(CarDelete, self).get_context_data(**kwargs)
+        context['title'] = f'{context["car"].brand} {context["car"].model}'
+        return context
+
+    @method_decorator(user_passes_test(lambda u: not u.is_anonymous, login_url='auth:login', redirect_field_name=''))
+    def dispatch(self, request, *args, **kwargs):
+        return super(CarDelete, self).dispatch(request, *args, **kwargs)
+
+
+@user_passes_test(lambda u: not u.is_anonymous, login_url='auth:login', redirect_field_name='')
+def car_activate(request, pk):
+    car_id = int(pk)
+    cars = Park.objects.filter(user=request.user)
+    for car in cars:
+        need_save = False
+        if car.id == car_id:
+            car.active = True
+            need_save = True
+        elif car.active == True:
+            car.active = False
+            need_save = True
+
+        if need_save:
+            car.save()
+    return redirect(reverse('car_park:cars'))
+
+
 @user_passes_test(lambda u: not u.is_anonymous, login_url='auth:login', redirect_field_name='')
 def history(request, car_id):
     car_id = int(car_id)
-    car = cars_example()[car_id - 1]
+    car = get_object_or_404(Park, id=car_id)
+    history = CarHistory.objects.filter(car_id=car_id)
+    # car = cars_example()[car_id - 1]
     # car = None
-    car_info = car_info_example()
+    # car_info = car_info_example()
     # car_info = None
     # print(car_info)
     context = {
-        'title': f'{car["brand"]} {car["model"]} ({car["year"]})',
+        'title': f'{car.brand} {car.model}',
         'car': car,
-        'car_info': car_info,
+        'history': history,
         'car_upcoming': car_upcoming_example(),
     }
     return render(request, 'car_park/history.html', context)
@@ -87,75 +132,32 @@ class HistoryAdd(CreateView):
     template_name = 'car_park/history_add.html'
     success_url = reverse_lazy('car_park:cars')
 
+    @method_decorator(user_passes_test(lambda u: not u.is_anonymous, login_url='auth:login', redirect_field_name=''))
+    def dispatch(self, request, *args, **kwargs):
+        car_id = int(kwargs['car_id'])
+        self.car = Park.car_by_id(car_id)
+        return super(HistoryAdd, self).dispatch(request, *args, **kwargs)
+
+    def get_form(self, *args, **kwargs):
+        form = super(HistoryAdd, self).get_form(*args, **kwargs)
+        if CarHistory.record_last_by_mileage(self.car.id) is None:
+            form.fields['type'].initial = "INI"
+            form.fields['type'].disabled = True
+        else:
+            # form.fields['type'].choices.pop(0)
+            form.fields['type'].widget.choices.pop(0)
+        return form
+
     def get_context_data(self, **kwargs):
         context = super(HistoryAdd, self).get_context_data(**kwargs)
         context['title'] = 'Добавить историю авто'
         return context
 
     def form_valid(self, form):
-
         car_park_carhistory = form.save(commit=False)
-        # car_park_carhistory.car_id = self.request.car_id
-        car_park_carhistory.car_id = 1
+        car_park_carhistory.car_id = self.car.id
         return super(HistoryAdd, self).form_valid(form)
 
-#
-#
-# def by_user(request, user_uid):
-#     parks = Park.objects.filter(user=user_uid)
-#     users = UserUID.objects.all()
-#     current_user = UserUID.objects.get(pk=user_uid)
-#     context = {'parks': parks, 'users': users, 'current_user': current_user}
-#     return render(request, 'car_park/by_user.html', context)
-#
-#
-# class ParkCreateView(CreateView):
-#     template_name = 'car_park/create.html'
-#     form_class = TechInspectForm
-#     success_url = reverse_lazy('index')
-#
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         context['parks'] = Park.objects.all()
-#         return context
-
-
-def cars_example():
-    return [
-        {
-            'id': 1,
-            'user_id': 1,
-            'brand': 'Skoda',
-            'model': 'Yeti',
-            'year': 2012,
-            'description': 'Основная семейная машина (она же единственная)',
-            'created_at': 1623531600,
-            'deleted_at': 0,
-            'active': True,
-            # 'mileage': 155000,
-        }
-    ]
-
-
-def car_info_example():
-    return [
-        {
-            'id': 1,
-            'car_id': 1,
-            'type': 'Заправка',
-            'mileage': 155030,
-            'created_at': '05.06.2021',
-            'comment': 'Заправил 30 литров'
-        },
-        {
-            'id': 2,
-            'car_id': 1,
-            'type': 'ТО',
-            'mileage': 155040,
-            'created_at': '10.06.2021',
-            'comment': 'Замена моторного масла и фильтра'
-        },
-    ]
 
 
 def car_upcoming_example():

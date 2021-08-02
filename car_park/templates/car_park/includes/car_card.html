@@ -1,5 +1,18 @@
-<div class="card border-left-primary shadow h-100 py-2 my-3">
+<div class="card car-card{% if car.active %} active{% endif %}{% if car.deleted_at is not None %} deleted{% endif %} border-left-primary shadow h-100 py-2 my-3">
     <div class="row no-gutters align-items-center">
+        <div class="car-status mx-3">
+            {% if car.deleted_at is not None %}
+                <i class="fas fa-ban fa-2x text-danger" title="Удален из гаража"></i>
+            {% else %}
+                {% if car.active %}
+                    <i class="fas fa-check-circle fa-2x text-success"></i>
+                {% else %}
+                    <a href="{% url 'car_park:activate' car.id %}" title="Активировать">
+                        <i class="far fa-check-circle fa-2x text-info"></i>
+                    </a>
+                {% endif %}
+            {% endif %}
+        </div>
         <div class="mx-3">
             <i class="fas fa-car fa-2x text-gray-300"></i>
         </div>
@@ -12,19 +25,29 @@
             </div>
         </a>
         <div class="col-2 mr-3">
-            <div class="mb-0 text-muted">
-                <span class="text-xs font-italic">Текущий пробег:</span><br>
-                <span class="h5 font-weight-bold">155 200</span>
+            <div class="mb-0 text-muted text-center">
+                {% if car.mileage_last %}
+                    <span class="text-xs font-italic">Текущий пробег:</span><br>
+                    <span class="h5 font-weight-bold">{{ car.mileage_last }}</span>
+                {% else %}
+                    <span class="text-xs font-italic">Нет записей пробега</span><br>
+                    <a href="{% url 'car_park:history_add' car.id %}" title="Добавить новую запись">
+                        <i class="fas fa-plus-circle fa-2x text-primary"></i>
+                    </a>
+                {% endif %}
             </div>
         </div>
 
-        <div class="col-4">
-            <a href="{% url 'car_park:history' car.id %}" class="btn btn-primary mr-3">
-                История обслуживания
-            </a>
-            <a href="{% url 'car_park:car_info' car.id %}" class="btn btn-secondary">
-                Инфо
-            </a>
-        </div>
+
+        {% if car.deleted_at is None %}
+            <div class="col-4">
+                <a href="{% url 'car_park:history' car.id %}" class="btn btn-primary mr-3">
+                    История обслуживания
+                </a>
+                <a href="{% url 'car_park:car_info' car.id %}" class="btn btn-secondary">
+                    Инфо
+                </a>
+            </div>
+        {% endif %}
     </div>
 </div>
