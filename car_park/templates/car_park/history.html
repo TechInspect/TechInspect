@@ -14,7 +14,7 @@
             <div class="card shadow mb-4">
                 <div class="card-header py-3 d-flex justify-content-between">
                     <h6 class="m-0 font-weight-bold text-primary">История обслуживания</h6>
-                    <a href="{% url 'car_park:history_add' %}" class="btn btn-outline-success">Добавить отметку</a>
+                    <a href="{% url 'car_park:history_add' car.id %}" class="btn btn-outline-success">Добавить отметку</a>
 <!--                    <button type="button" class="btn btn-outline-success">Добавить отметку</button>-->
                 </div>
                 <div>
@@ -25,13 +25,13 @@
                             <th>Тип отметки</th>
                             <th>Комментарий</th>
                         </tr>
-                        {% if car_info %}
-                            {% for info_item in car_info %}
+                        {% if history %}
+                            {% for record in history %}
                                 <tr>
-                                    <td>{{ info_item.created_at }}</td>
-                                    <td>{{ info_item.mileage }}</td>
-                                    <td>{{ info_item.type }}</td>
-                                    <td>{{ info_item.comment }}</td>
+                                    <td>{{ record.created_at }}</td>
+                                    <td>{{ record.mileage }}</td>
+                                    <td>{{ record.type_decode }}</td>
+                                    <td>{{ record.comment }}</td>
                                 </tr>
                             {% endfor %}
                         {% else %}

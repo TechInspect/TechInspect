@@ -19,9 +19,11 @@
                     <div>Описание: {{ car.description }}</div>
                 </div>
                 <div class="container py-3">
-                    <a href="{% url 'car_park:cars' %}" class="btn btn-primary">Активировать</a>
-                    <a href="{% url 'car_park:cars' %}" class="btn btn-secondary">Редактировать</a>
-                    <a href="{% url 'car_park:cars' %}" class="btn btn-danger">Удалить</a>
+                    {% if not car.active %}
+                        <a href="{% url 'car_park:activate' car.id %}" class="btn btn-primary">Активировать</a>
+                    {% endif %}
+                    <a href="{% url 'car_park:edit' car.id %}" class="btn btn-secondary">Редактировать</a>
+                    <a href="{% url 'car_park:delete' car.id %}" class="btn btn-danger">Удалить</a>
                 </div>
             </div>
         </div>
