@@ -125,7 +125,10 @@ class HistoryAdd(CreateView):
     model = CarHistory
     fields = ['mileage', 'type', 'comment']
     template_name = 'car_park/history_add.html'
-    success_url = reverse_lazy('car_park:cars')
+
+    def get_success_url(self):
+        self.success_url = reverse_lazy('car_park:history', args=[self.kwargs['car_id']])
+        return str(self.success_url)
 
     @method_decorator(user_passes_test(lambda u: not u.is_anonymous, login_url='auth:login', redirect_field_name=''))
     def dispatch(self, request, *args, **kwargs):
