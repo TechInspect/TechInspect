@@ -123,7 +123,7 @@ def history(request, car_id):
 
 class HistoryAdd(CreateView):
     model = CarHistory
-    fields = ['mileage', 'type', 'comment']
+    fields = ['mileage', 'type', 'date_at', 'comment']
     template_name = 'car_park/history_add.html'
 
     def get_success_url(self):
@@ -138,6 +138,7 @@ class HistoryAdd(CreateView):
 
     def get_form(self, *args, **kwargs):
         form = super(HistoryAdd, self).get_form(*args, **kwargs)
+        form.fields['date_at'].widget.attrs['class'] = 'datepicker-history'
         if CarHistory.record_last_by_mileage(self.car.id) is None:
             form.fields['type'].initial = "INI"
             form.fields['type'].disabled = True
@@ -154,6 +155,7 @@ class HistoryAdd(CreateView):
     def form_valid(self, form):
         car_park_carhistory = form.save(commit=False)
         car_park_carhistory.car_id = self.car.id
+        print(car_park_carhistory.date_at)
         return super(HistoryAdd, self).form_valid(form)
 
 
