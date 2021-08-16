@@ -45,6 +45,9 @@ nav {
     color: darkcyan;
 }
 
+.text-xl {
+    font-size: 1.5em;
+}
 .text-s {
     font-size: 0.9em;
 }
@@ -70,6 +73,22 @@ nav {
 }
 .car-card.deleted {
     opacity: 0.5 !important;
+}
+
+/* History */
+.history-item .history-edit {
+    opacity: 0;
+    -webkit-transition: 0.3s;
+    -moz-transition: 0.3s;
+    -ms-transition: 0.3s;
+    -o-transition: 0.3s;
+    transition: 0.3s;
+}
+.history-item:hover .history-edit {
+    opacity: 0.8;
+}
+.history-item .history-edit:hover {
+    opacity: 1;
 }
 
 /*  */

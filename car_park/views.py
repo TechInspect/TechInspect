@@ -1,3 +1,6 @@
+import time
+import datetime
+
 from django.shortcuts import render, get_object_or_404, redirect
 import datetime
 from django.views.generic import CreateView, DetailView, UpdateView, DeleteView
@@ -124,11 +127,7 @@ def history(request, car_id):
 class HistoryAdd(CreateView):
     model = CarHistory
     fields = ['mileage', 'type', 'date_at', 'comment']
-    template_name = 'car_park/history_add.html'
-
-    def get_success_url(self):
-        self.success_url = reverse_lazy('car_park:history', args=[self.kwargs['car_id']])
-        return str(self.success_url)
+    template_name = 'car_park/history_form.html'
 
     @method_decorator(user_passes_test(lambda u: not u.is_anonymous, login_url='auth:login', redirect_field_name=''))
     def dispatch(self, request, *args, **kwargs):
@@ -136,9 +135,17 @@ class HistoryAdd(CreateView):
         self.car = Park.car_by_id(car_id)
         return super(HistoryAdd, self).dispatch(request, *args, **kwargs)
 
+    def get_context_data(self, **kwargs):
+        context = super(HistoryAdd, self).get_context_data(**kwargs)
+        context['title'] = 'Добавить историю авто'
+        context['car'] = self.car
+        return context
+
     def get_form(self, *args, **kwargs):
         form = super(HistoryAdd, self).get_form(*args, **kwargs)
         form.fields['date_at'].widget.attrs['class'] = 'datepicker-history'
+        form.fields['date_at'].initial = time.strftime('%d.%m.%Y', time.localtime())
+        form.fields['date_at'].input_formats = ['%d.%m.%Y']
         if CarHistory.record_last_by_mileage(self.car.id) is None:
             form.fields['type'].initial = "INI"
             form.fields['type'].disabled = True
@@ -146,17 +153,67 @@ class HistoryAdd(CreateView):
             form.fields['type'].widget.choices.pop(0)
         return form
 
-    def get_context_data(self, **kwargs):
-        context = super(HistoryAdd, self).get_context_data(**kwargs)
-        context['title'] = 'Добавить историю авто'
-        context['car'] = self.car
-        return context
+    def get_success_url(self):
+        self.success_url = reverse_lazy('car_park:history', args=[self.kwargs['car_id']])
+        return str(self.success_url)
 
     def form_valid(self, form):
         car_park_carhistory = form.save(commit=False)
         car_park_carhistory.car_id = self.car.id
-        print(car_park_carhistory.date_at)
         return super(HistoryAdd, self).form_valid(form)
+
+
+class HistoryEdit(UpdateView):
+    model = CarHistory
+    fields = ['mileage', 'type', 'date_at', 'comment']
+    template_name = 'car_park/history_form.html'
+    context_object_name = 'record'
+
+    @method_decorator(user_passes_test(lambda u: not u.is_anonymous, login_url='auth:login', redirect_field_name=''))
+    def dispatch(self, request, *args, **kwargs):
+        car_id = int(kwargs['car_id'])
+        self.car = Park.car_by_id(car_id)
+        return super(HistoryEdit, self).dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super(HistoryEdit, self).get_context_data(**kwargs)
+        context['title'] = 'Редактирование записи'
+        context['car'] = self.car
+        context['is_update'] = True
+        return context
+
+    def get_form(self, *args, **kwargs):
+        form = super(HistoryEdit, self).get_form(*args, **kwargs)
+        form.fields['date_at'].widget.attrs['class'] = 'datepicker-history'
+        form.fields['date_at'].widget.format = '%d.%m.%Y'
+        form.fields['date_at'].input_formats = ['%d.%m.%Y']
+        # form.fields['date_at'] = ['%d.%m.%Y']
+        # if CarHistory.record_last_by_mileage(self.car.id) is None:
+        #     form.fields['type'].initial = "INI"
+        #     form.fields['type'].disabled = True
+        # else:
+        #     form.fields['type'].widget.choices.pop(0)
+        return form
+
+    def get_success_url(self):
+        self.success_url = reverse_lazy('car_park:history', args=[self.kwargs['car_id']])
+        return str(self.success_url)
+
+
+class HistoryDelete(DeleteView):
+    model = CarHistory
+    template_name = 'car_park/history_delete.html'
+    context_object_name = 'record'
+    success_url = reverse_lazy('car_park:history')
+
+    def get_context_data(self, **kwargs):
+        context = super(HistoryDelete, self).get_context_data(**kwargs)
+        context['title'] = f'123'
+        return context
+
+    @method_decorator(user_passes_test(lambda u: not u.is_anonymous, login_url='auth:login', redirect_field_name=''))
+    def dispatch(self, request, *args, **kwargs):
+        return super(HistoryDelete, self).dispatch(request, *args, **kwargs)
 
 
 

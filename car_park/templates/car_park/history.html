@@ -24,14 +24,18 @@
                             <th>Пробег</th>
                             <th>Тип отметки</th>
                             <th>Комментарий</th>
+                            <th></th>
                         </tr>
                         {% if history %}
                             {% for record in history %}
-                                <tr>
-                                    <td>{{ record.created_at }}</td>
+                                <tr class="history-item">
+                                    <td>{% firstof record.date_at|date:'Y.m.d' '-' %}</td>
                                     <td>{{ record.mileage }}</td>
                                     <td>{{ record.type_decode }}</td>
                                     <td>{{ record.comment }}</td>
+                                    <td>
+                                        <a href="{% url 'car_park:history_edit' car.id record.id %}" class="history-edit"><i class="fas fa-edit text-xl"></i></a>
+                                    </td>
                                 </tr>
                             {% endfor %}
                         {% else %}
