@@ -3,3 +3,5 @@ env/
 .idea/
 __pycache__
 *.sqlite3
+tmp/
+authapp/templates/authapp/verification.html

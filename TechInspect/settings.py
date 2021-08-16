@@ -152,3 +152,22 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'authapp.User'
 
 LOGIN_REDIRECT_URL = 'main:index'  # URL redirecting after a successful authentication
+
+# constant for email
+DOMAIN_NAME = 'http://localhost:8000'  # URL site
+
+# EMAIL_HOST = 'smtp.mailtrap.io'  # smtp server
+# EMAIL_HOST_USER = env('EMAIL_HOST_USER')
+# EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
+# EMAIL_PORT = env('EMAIL_PORT')
+# EMAIL_USE_SSL = False  # Использование шифрования (не использовать)
+# EMAIL_USE_TLS = False
+
+# EMAIL_HOST_USER, EMAIL_HOST_PASSWORD = None, None
+
+# вариант python -m smtpd -n -c DebuggingServer localhost:25
+# EMAIL_HOST_USER, EMAIL_HOST_PASSWORD = None, None
+
+# вариант логирования сообщений почты в виде файлов вместо отправки
+EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
+EMAIL_FILE_PATH = 'tmp/email-messages/'
