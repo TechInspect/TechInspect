@@ -12,6 +12,7 @@
 
     <!-- Bootstrap core CSS -->
     <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'vendor/bootstrap-datepicker/css/bootstrap-datepicker3.min.css' %}" rel="stylesheet">
     <link href="{% static 'css/style.css' %}" rel="stylesheet">
 
     <!-- Custom styles for this page -->
@@ -29,8 +30,13 @@
     <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
     <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
 
+    <script src="{% static 'vendor/bootstrap-datepicker/js/bootstrap-datepicker.min.js' %}"></script>
+    <script src="{% static 'vendor/bootstrap-datepicker/locales/bootstrap-datepicker.ru.min.js' %}"></script>
+
     <!-- FontAwesome script -->
     <script src="{% static 'vendor/fontawesome/fontawesome-icons.js' %}" crossorigin="anonymous"></script>
+
+    <script src="{% static 'js/actions.js' %}"></script>
 
     {% block script %} {% endblock %}
 

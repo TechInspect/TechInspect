@@ -58,6 +58,7 @@ class CarHistory(models.Model):
     car = models.ForeignKey(Park, on_delete=models.CASCADE, verbose_name='ID авто')
     type = models.CharField(max_length=3, choices=HISTORY_TYPES_CHOICES, default=FUEL, verbose_name='Тип записи')
     mileage = models.PositiveIntegerField(verbose_name='Пробег авто на момент записи')
+    date_at = models.DateField(null=True, blank=True, verbose_name='Дата отметки в истории')
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания записи')
     updated_at = models.DateTimeField(auto_now=True, verbose_name='Дата обновления записи')
     comment = models.TextField(null=True, blank=True, verbose_name='Комментарий к записи')
@@ -65,7 +66,7 @@ class CarHistory(models.Model):
     class Meta:
         verbose_name_plural = 'История обслуживания'
         verbose_name = 'Запись истории'
-        ordering = ['mileage', 'created_at']
+        ordering = ['mileage', 'date_at']
 
     @property
     def type_decode(self):
