@@ -1,0 +1,29 @@
+{% extends "mainapp/page.html" %}
+{% load bootstrap4 %}
+
+{% block content %}
+    <div class="col-md-6 m-auto">
+        <div class="card">
+            <div class="card-header py-3 d-flex justify-content-between">
+                <h3 class="m-0 font-weight-bold text-primary">{{ title }}</h3>
+            </div>
+            <div class="p-3">
+                <form method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="user" value="{{ user.id }}">
+                    {% bootstrap_form form %}
+                    {% if is_update %}
+                        {% buttons submit='Сохранить' %}
+                            <a href="{% url 'car_park:history' car.id %}" class="btn btn-secondary">Назад</a>
+                            <a href="{% url 'car_park:history_delete' car.id record.id %}" class="btn btn-danger">Удалить</a>
+                        {% endbuttons %}
+                    {% else  %}
+                        {% buttons submit='Добавить' %}
+                            <a href="{% url 'car_park:history' car.id %}" class="btn btn-secondary">Назад</a>
+                        {% endbuttons %}
+                    {% endif %}
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

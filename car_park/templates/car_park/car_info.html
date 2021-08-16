@@ -19,6 +19,9 @@
                     <div>Описание: {{ car.description }}</div>
                 </div>
                 <div class="container py-3">
+                    <a href="{% url 'car_park:history' car.id %}" class="btn btn-primary">Просмотр истории обслуживания</a>
+                </div>
+                <div class="container py-3">
                     {% if not car.active %}
                         <a href="{% url 'car_park:activate' car.id %}" class="btn btn-primary">Активировать</a>
                     {% endif %}
