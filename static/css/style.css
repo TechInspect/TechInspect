@@ -55,3 +55,21 @@ nav {
 .border-left-primary {
     border-left: .25rem solid #4e73df!important;
 }
+
+
+/*      Customize      */
+/* Cars */
+.car-card:not(.deleted):not(.active) .car-status {
+    opacity: 0;
+}
+.car-card:not(.deleted):not(.active):hover .car-status {
+    opacity: 0.5;
+}
+.car-card:not(.deleted):not(.active) .car-status:hover {
+    opacity: 1;
+}
+.car-card.deleted {
+    opacity: 0.5 !important;
+}
+
+/*  */
