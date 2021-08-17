@@ -1,7 +1,8 @@
 from django.urls import path, re_path
 
 # from .views import index, ParkCreateView, by_user
-from car_park.views import cars, CarAdd, CarDetail, CarEdit, CarDelete, car_activate, history, HistoryAdd
+from car_park.views import cars, CarAdd, CarDetail, CarEdit, CarDelete, car_activate,\
+    history, HistoryAdd, HistoryEdit, HistoryDelete
 
 app_name = 'car_park'
 
@@ -19,4 +20,6 @@ urlpatterns = [
 
     re_path(r'^(?P<car_id>\d+)/history/$', history, name='history'),
     re_path(r'^(?P<car_id>\d+)/history/add/$', HistoryAdd.as_view(), name='history_add'),
+    re_path(r'^(?P<car_id>\d+)/history/(?P<pk>\d+)/edit/$', HistoryEdit.as_view(), name='history_edit'),
+    re_path(r'^(?P<car_id>\d+)/history/(?P<pk>\d+)/delete/$', HistoryDelete.as_view(), name='history_delete'),
 ]

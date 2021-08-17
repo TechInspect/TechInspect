@@ -15,6 +15,8 @@
                     {% buttons submit='Войти' %}{% endbuttons %}
                 </form>
                 <a href="{% url 'auth:register' %}">Регистрация</a>
+                <br>
+                <a href="{% url 'social:begin' 'vk-oauth2' %}?next=/">Вход через Вконтакте</a>
             </div>
         </div>
     </div>
