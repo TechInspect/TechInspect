@@ -204,16 +204,19 @@ class HistoryDelete(DeleteView):
     model = CarHistory
     template_name = 'car_park/history_delete.html'
     context_object_name = 'record'
-    success_url = reverse_lazy('car_park:history')
 
     def get_context_data(self, **kwargs):
         context = super(HistoryDelete, self).get_context_data(**kwargs)
-        context['title'] = f'123'
+        context['title'] = f'Удаление записи'
         return context
 
     @method_decorator(user_passes_test(lambda u: not u.is_anonymous, login_url='auth:login', redirect_field_name=''))
     def dispatch(self, request, *args, **kwargs):
         return super(HistoryDelete, self).dispatch(request, *args, **kwargs)
+
+    def get_success_url(self):
+        self.success_url = reverse_lazy('car_park:history', args=[self.kwargs['car_id']])
+        return str(self.success_url)
 
 
 
