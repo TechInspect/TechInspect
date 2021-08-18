@@ -1,5 +1,4 @@
 import time
-import datetime
 
 from django.shortcuts import render, get_object_or_404, redirect
 import datetime
@@ -9,6 +8,8 @@ from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required, user_passes_test
 
 from car_park.models import Park, CarHistory
+
+
 # from car_park.forms import CarAddForm
 
 # from .forms import TechInspectForm
@@ -217,7 +218,6 @@ class HistoryDelete(DeleteView):
     def get_success_url(self):
         self.success_url = reverse_lazy('car_park:history', args=[self.kwargs['car_id']])
         return str(self.success_url)
-
 
 
 def car_upcoming_example():

@@ -18,6 +18,7 @@ from django.urls import path, re_path
 from django.conf.urls import include
 
 urlpatterns = [
+    path('', include('social_django.urls', namespace='social')),
     re_path(r'^', include('mainapp.urls', namespace='main')),
     re_path(r'^garage/', include('car_park.urls', namespace='car_park')),
     path('auth/', include('authapp.urls', namespace='auth')),
