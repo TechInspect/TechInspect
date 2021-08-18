@@ -20,7 +20,9 @@ from car_park.models import Park, CarHistory
 def cars(request):
     context = {
         'title': 'Гараж',
-        'cars': Park.objects.filter(user=request.user)
+        'cars': Park.objects.filter(user=request.user),
+        # 'cars': Park.objects.filter(user=request.user, deleted_at=None),
+        # 'cars': Park.objects.filter(deleted_at=None),
     }
     return render(request, 'car_park/cars.html', context)
 
